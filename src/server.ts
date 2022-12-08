@@ -1,9 +1,10 @@
 import express from 'express'
- 
-import { Request, Response } from 'express';
+import 'reflect-metadata'
 import route from './routes';
  
 const app = express();
+
+
 
 app.use(express.json())
  

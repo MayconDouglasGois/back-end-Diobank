@@ -1,6 +1,6 @@
 import { userService } from "../services/userService";
 import { Request, Response } from 'express';
-import { IUser } from "../model/IUser";
+import { IUser } from "../entities/IUser";
 export class userController {
     private UserService: userService
 

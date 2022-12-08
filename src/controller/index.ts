@@ -1,5 +1,5 @@
 import { userService } from './../services/userService';
-import { IUser } from './../model/IUser';
+import { IUser } from '../entities/IUser';
 import { userController } from './userController';
 
 const User: IUser[] = []

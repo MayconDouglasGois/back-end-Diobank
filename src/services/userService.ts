@@ -1,4 +1,4 @@
-import { IUser } from "../model/IUser"
+import { IUser } from "../entities/IUser"
 
    
 
