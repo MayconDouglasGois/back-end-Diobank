@@ -1,32 +1,34 @@
-import { IUser } from "../entities/IUser"
 
-   
+import { UserRepository } from '../repository/UserRepository';
+import { User } from '../entities/User';
+export class UserService {
 
-export class userService {
+   private userRepository: UserRepository
 
-
-    db: IUser[]
-
-   constructor(user: IUser[]){
-        this.db = user
+   constructor(userRepository: UserRepository){
+      this.userRepository = userRepository
     }
 
 
- createUser(name: string, email: string): void {
-    const user = {
-        name,
-        email
-    }
-    this.db.push(user)
+  async createUser(name: string, email: string, password: string): Promise<User>{
+   const user = new User(name,email,password)
+   return this.userRepository.CreateUser(user)
  }
 
- getUser(){
-    return this.db
+  async getUser(userId: string): Promise<User>{
+   return this.userRepository.getUser(userId)
+ }
+ private async getAuthentication (email: string, password: string){
+  return this.userRepository.getUserByEmailAndPassword(email, password)
  }
 
-
- deleteUser(name: string): void{
-    const length = this.db.findIndex((a)=>{return a.name === name })
-    this.db.splice(length,1)
+ async getToken(email: string, password: string){
+  const user = await this.getAuthentication(email, password)
+  return user.user_id
  }
+
+ deleteUser(){
+
+ }
+
 }

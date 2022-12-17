@@ -1,9 +1,17 @@
-import { userService } from './../services/userService';
-import { IUser } from '../entities/IUser';
-import { userController } from './userController';
+import { AppDataSource } from '../database';
+import { UserController } from './UserController';
+import { UserRepository } from './../repository/UserRepository';
+import { UserService } from '../services/UserService';
+import { LoginControler } from './LoginControler';
 
-const User: IUser[] = []
+const manager = AppDataSource.manager
 
-const UserService = new userService(User)
+const userRepository = new UserRepository(manager)
 
-export const UserController = new userController(UserService)
+const userService = new UserService(userRepository)
+
+const userController = new UserController(userService)
+
+const loginControler = new LoginControler()
+
+export {userController, loginControler}

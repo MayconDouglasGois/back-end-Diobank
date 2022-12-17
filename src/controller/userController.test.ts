@@ -1,5 +1,5 @@
-import { userService } from "../services/userService"
-import { userController } from "./userController"
+import { UserService } from "../services/UserService"
+import { UserController } from "./UserController"
 import {Request} from "express"
 import { makeMokeResponse } from "../__mocks__/mockResponse.mock"
 
@@ -8,44 +8,47 @@ import { makeMokeResponse } from "../__mocks__/mockResponse.mock"
 
 describe("userController",()=>{
     
-    const mockUserService: Partial<userService> = {
+    const mockUserService: Partial<UserService> = {
         createUser : jest.fn(),
-        getUser : jest.fn().mockReturnValue([{
+        getUser : jest.fn().mockReturnValue({
             name: "maycon",
-            email: "teste@gmail.com"
-        } ]),
+            email: "teste@gmail.com",
+            user_id: "123"
+        }),
         deleteUser: jest.fn()
     }
     
-    const UserController = new userController(mockUserService as userService)
+    const userController = new UserController(mockUserService as UserService)
 
-    it("Deve adicionar um usuario",()=>{
+    it("Deve adicionar um usuario",async ()=>{
 
         const mockRequest = {
             body: {
                 name: "maycon",
-                email: "teste@gmail.com"
+                email: "teste@gmail.com",
+                password: "123"
             } 
         } as Request
 
         const mockResponse = makeMokeResponse()
-        UserController.createUser(mockRequest,mockResponse)
+       await userController.createUser(mockRequest,mockResponse)
         expect(mockResponse.state.status).toBe(201)
         expect(mockResponse.state.json).toMatchObject({"Success": "User created"})
     })
 
-    it("Não deve adicionar um usuario sem um name valido",()=>{
+    it("Não deve adicionar um usuario sem um name valido",async ()=>{
         
         const mockRequest = {
             body: {
                 name: "",
-                email: "teste@gmail.com"
+                email: "teste@gmail.com",
+                password: "1234"
             } 
         } as Request
         const mockResponse = makeMokeResponse()
-        UserController.createUser(mockRequest,mockResponse)
+        await userController.createUser(mockRequest,mockResponse)
         expect(mockResponse.state.status).toBe(404)
-        expect(mockResponse.state.json).toMatchObject({"Error": "name does not exist"})
+        expect(mockResponse.state.json).toMatchObject({messeger : "bad Request! data not found"})
     })
 
     it("Não deve adicionar um usuario sem um email valido",()=>{
@@ -53,38 +56,47 @@ describe("userController",()=>{
         const mockRequest = {
             body: {
                 name: "maycon",
-                email: ""
+                email: "",
+                password:"123"
             } 
         } as Request
         const mockResponse = makeMokeResponse()
-        UserController.createUser(mockRequest,mockResponse)
+        userController.createUser(mockRequest,mockResponse)
         expect(mockResponse.state.status).toBe(404)
-        expect(mockResponse.state.json).toMatchObject({"Error": "email does not exist"})
+        expect(mockResponse.state.json).toMatchObject({messeger : "bad Request! data not found"})
+    })
+
+    it("Não deve adicionar um usuario sem um password valido",async ()=>{
+        
+        const mockRequest = {
+            body: {
+                name: "maycon",
+                email: "teste@mail.com",
+                password:""
+            } 
+        } as Request
+        const mockResponse = makeMokeResponse()
+        await userController.createUser(mockRequest,mockResponse)
+        expect(mockResponse.state.status).toBe(404)
+        expect(mockResponse.state.json).toMatchObject({messeger : "bad Request! data not found"})
     })
 
 
-    it("Deve retornar o array com o users",()=>{
+    it("Deve retornar um objeto com o user referente ao id informado",async ()=>{
 
-        const mockRequest = {} as Request
+        const mockRequest = {
+            body: {
+                user_id: "123"
+            } 
+        } as Request
         const mockResponse = makeMokeResponse()
-        UserController.getUser(mockRequest,mockResponse)
+        await userController.getUser(mockRequest,mockResponse)
         expect(mockResponse.state.status).toBe(200)
-        expect(mockResponse.state.json).toMatchObject([{
+        expect(mockResponse.state.json).toMatchObject({
             name: "maycon",
-            email: "teste@gmail.com"
-        }])
-    })
-
-    it("Deve retornar o array com o users",()=>{
-
-        const mockRequest = {} as Request
-        const mockResponse = makeMokeResponse()
-        UserController.getUser(mockRequest,mockResponse)
-        expect(mockResponse.state.status).toBe(200)
-        expect(mockResponse.state.json).toMatchObject([{
-            name: "maycon",
-            email: "teste@gmail.com"
-        }])
+            email: "teste@gmail.com",
+            user_id: "123"
+        })
     })
 
     it("Dereve deletar o usuario",()=>{
@@ -96,7 +108,7 @@ describe("userController",()=>{
             } 
         } as Request
         const mockResponse = makeMokeResponse()
-        UserController.deleteUser(mockRequest,mockResponse)
+        userController.deleteUser(mockRequest,mockResponse)
         expect(mockResponse.state.status).toBe(200)
         expect(mockResponse.state.json).toMatchObject({"Success": "User deleted"})
     })

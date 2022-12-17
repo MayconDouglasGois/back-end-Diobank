@@ -1,38 +1,34 @@
-import { userService } from "../services/userService";
+import { UserService } from "../services/UserService";
 import { Request, Response } from 'express';
-import { IUser } from "../entities/IUser";
-export class userController {
-    private UserService: userService
+import { User } from "../entities/User";
+export class UserController {
+    private userService: UserService
 
-        constructor(userService: userService){
-            this.UserService = userService
+        constructor(UserService: UserService){
+            this.userService = UserService
         }
 
-        createUser(req: Request,res: Response){
-            const user: IUser = req.body
+        async createUser(req: Request,res: Response){
+            const user: User = req.body
 
 
-          if(!user.name){
-            return res.status(404).json({"Error": "name does not exist"})
+          if(!(user.name && user.email && user.password)){
+            return res.status(404).json({messeger : "bad Request! data not found"})
           }
-          if(!user.email){
-            return res.status(404).json({"Error": "email does not exist"})
-          }
-         
-
-            this.UserService.createUser(user.name,user.email)
+          await this.userService.createUser(user.name,user.email, user.password)
             return res.status(201).json({"Success": "User created"})
         
         }
 
-        getUser(req: Request,res: Response){
-            const user = this.UserService.getUser()
+       async getUser(req: Request,res: Response){
+          const {userId}: {userId: string} = req.body
+            const user = await this.userService.getUser(userId)
             return res.status(200).json(user)
         }
 
         deleteUser(req: Request,res: Response){
-          const user: IUser = req.body
-          this.UserService.deleteUser(user.name)
+          const user: User = req.body
+          this.userService.deleteUser()
           return res.status(200).json({"Success": "User deleted"})
        }
 }

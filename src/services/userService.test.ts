@@ -1,40 +1,32 @@
-import { userService } from "./userService"
 
 
+import { UserService } from '../services/UserService';
 
 describe("userService",()=>{
 
-const mockUser = [{
-    name: "name",
-    email: "email"
-    }]
+jest.mock("../repository/UserRepository")
 
-    const UserService = new userService(mockUser)
-
+const mockUserRepository = require("../repository/UserRepository")
+   
+const userService = new UserService(mockUserRepository)
 
 
-    it("Deve criar um novo usuario",()=>{
-
-        const mockUserData = {
-            name: "maycon",
-            email: "douglas"
-        }
-        UserService.createUser(mockUserData.name, mockUserData.email)
-        expect(UserService.db).toHaveLength(2)
+    it("Deve criar um novo usuario",async ()=>{
+        mockUserRepository.CreateUser = jest.fn().mockResolvedValue({name: "maycon",email:"teste@mail.com",password: "123"})
+        const response = await userService.createUser("maycon","teste@mail.com","123")
+        expect(mockUserRepository.CreateUser).toHaveBeenCalled()
+        expect(response).toMatchObject({name: "maycon",email:"teste@mail.com",password: "123"})
     })
 
-
-
-    it("Deve retornar a lista de usuarios",()=>{
-        const users = UserService.getUser()
-        expect(users).toMatchObject([{"email": "email", "name": "name"}, {"email": "douglas", "name": "maycon"}])
+    it("Deve retornar um usuario com o user_id fornecido",async ()=>{
+        mockUserRepository.getUser = jest.fn().mockResolvedValue({user_id: "123",name: "maycon",email:"teste@mail.com",password: "123"})
+        const response = await userService.getUser("123")
+        expect(mockUserRepository.getUser).toHaveBeenCalled()
+        expect(response).toMatchObject({user_id: "123",name: "maycon",email:"teste@mail.com",password: "123"})
     })
 
-
-    it("Deve deletar o usuario com o nome 'name' ",()=>{
+    it("Deve retornar um token de usuario",async ()=>{
         
-        UserService.deleteUser("name")
-        expect(UserService.db).toHaveLength(1)
-    })
+         })
 
 })
