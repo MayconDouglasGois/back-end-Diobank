@@ -25,8 +25,4 @@ const userService = new UserService(mockUserRepository)
         expect(response).toMatchObject({user_id: "123",name: "maycon",email:"teste@mail.com",password: "123"})
     })
 
-    it("Deve retornar um token de usuario",async ()=>{
-        
-         })
-
 })

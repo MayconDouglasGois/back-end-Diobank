@@ -1,6 +1,9 @@
 
 import { UserRepository } from '../repository/UserRepository';
 import { User } from '../entities/User';
+
+
+
 export class UserService {
 
    private userRepository: UserRepository
@@ -18,13 +21,9 @@ export class UserService {
   async getUser(userId: string): Promise<User>{
    return this.userRepository.getUser(userId)
  }
- private async getAuthentication (email: string, password: string){
-  return this.userRepository.getUserByEmailAndPassword(email, password)
- }
 
- async getToken(email: string, password: string){
-  const user = await this.getAuthentication(email, password)
-  return user.user_id
+ async getAuthentication (email: string, password: string){
+  return this.userRepository.getUserByEmailAndPassword(email, password)
  }
 
  deleteUser(){
