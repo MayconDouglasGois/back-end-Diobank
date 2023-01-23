@@ -28,5 +28,7 @@
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^5.1.2",
     "typeorm": "^0.3.11"
-  }
+  },
+  "repository": "git@github.com:MayconDouglasGois/back-end-Diobank.git",
+  "author": "MayconDouglasGois <may2dgoiis@gmail.com>"
 }
