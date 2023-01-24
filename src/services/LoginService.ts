@@ -1,6 +1,6 @@
 import {sign} from 'jsonwebtoken'
 import { ItokenData, ItokenOptions } from '../interface/ILogin';
-import { UserService } from './UserService';
+import { UserService } from './userService';
 
 export class LoginService { 
 
@@ -8,7 +8,7 @@ export class LoginService {
     private userService: UserService
 
     constructor (userService: UserService) {
-        this.tokenKey = "G1haWwiLCJpYXQiOjE2NzEwNjUwMDgsInN1YiI"
+        this.tokenKey = process.env.TOKEN_KEY
         this.userService = userService
     }
 
